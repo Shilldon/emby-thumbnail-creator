@@ -3,6 +3,25 @@ body {
   color: white;
 }
 
+img {
+  max-width: 200px;
+  max-height: 200px;
+  -webkit-transition: .5s ease-in-out;
+  transition: .5s ease-in-out;
+}
+
+td {
+  text-align: center;
+  vertical-align: middle;
+  display: table-cell;
+  width: 200px;
+  height: 200px;
+}
+
+.btn {
+  margin: 5px;
+}
+
 .button-image {
   color: transparent;
   width: 150px;
