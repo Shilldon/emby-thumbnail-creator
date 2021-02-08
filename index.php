@@ -1,7 +1,7 @@
 <?php 
     require "config.php";
     include_once "globals.php";
-    include "environment.php";
+    
     include "functions/createtables.php";
     include "functions/checkisseriesvalid.php";
 
@@ -13,8 +13,15 @@
 <?php
 ##Main tables built here
      
+    #user has clicked on a series poster - display the episodes within that series
+    if(isset($_POST['choose_season'])) {
+        $series = $_POST["choose_series"];
+        $season = $_POST["choose_season"];
+        createEpisodesTable($series, $season);
+        exit();
+    }
     #user has clicked on a series poster - display the seasons within that series
-    if(isset($_POST['choose_series'])) {
+    else if(isset($_POST['choose_series'])) {
         $series = $_POST["choose_series"];
         createSeasonsTable($series);
         exit();

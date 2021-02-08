@@ -11,6 +11,20 @@ $(document).ready(function() {
     });
 
     //Seasons table
+    /*user selects a season from main series list - create data (the name of the series and season) in order to 
+    display the episodes within the series.*/
+    $("body").on("click",".choose-season", function() {
+        //hide any alert that might already be displayed
+        $(".alert").alert("close");
+        var series = $("#series-selected").val();
+        var season = $(this).val();
+        var tableData = $.parseJSON(`{ 
+            "choose_series" : "${series}", 
+            "choose_season" : "${season}" 
+        }`);
+        submitTableData(tableData);
+    });
+
     //dynamically created buttons - bound to body tag to enable function to be run on click
     $("body").on("click",".image-needed", function() {
         if($(this).attr("data-selected")!="selected") {
