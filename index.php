@@ -1,16 +1,14 @@
 <?php 
     require "config.php";
+    include_once "globals.php";
     include "environment.php";
     include "functions/createtables.php";
-    include "functions/checkformainimage.php";
     include "functions/checkisseriesvalid.php";
 
-    $location = getenv("SHARED_DRIVE");
-    $letter = "Z";
-    $config["series_folder"] = $letter.":";
-    // Map the drive
+        // Map the drive
+    $letter = $GLOBALS["letter"];
+    $location = $GLOBALS["location"];
     system("net use ".$letter.": \\".$location." /persistent:no>nul 2>&1");
-
 ?>
 <?php
 ##Main tables built here

@@ -1,23 +1,25 @@
 <?php
-    #include "functions/checkformainimage.php"; 
+    include "functions/checkformainimage.php"; 
     /*function to display all the series folders on the network drive to enable the user to 
     pick the appropriate series for which to create thumbnails*/
     function displayAllSeries($message) {
-        global $config;
 
         #cycle through the folders on the drive and output a table with poster images for each series
         $col = 1;
         $series_count = 0;
         $series_table ="";
 
+        #if a message variable has been passed display alert with the message
         if(!empty($message)) {
             echo "<script>
                     $('.alert-message').text('".$message."');
                     $('.alert').addClass('show');
-                </script>";            
+                </script>";    
+            #clear message after being displayed to prevent it being displayed on next table selected
+            $message = "";        
         }
         $series_table .= "<table>";
-        $series_folder = $config['series_folder'];
+        $series_folder = $GLOBALS['series_folder'];
         foreach (glob($series_folder."/*", GLOB_ONLYDIR) as $filename)
         {
             #create a table width of 5 columns
@@ -35,8 +37,7 @@
                 }            
             }
             #extract the name of the series and set as value for enable series selection 
-            $series_table .= "<input type=\"button\" class=\"button-image\" style=\"background-image:url(functions/getimage.php?i=".urlencode($img).")\" value=\"".str_replace($series_folder,"",$filename)."\" name=\"choose_series\" >";
-
+            $series_table .= "<input type=\"button\" class=\"button-image choose-series\" style=\"background-image:url(functions/getimage.php?i=".urlencode($img).")\" value=\"".str_replace($series_folder."/","",$filename)."\" name=\"choose_series\" >";
             $series_table .= "</td>";
             $col++;             
             if($col==6) {
@@ -52,20 +53,13 @@
     /*function to display all the seasons within a specific series selected to enable the user
     to pick the appropriate season for which to create thumbnails*/
     function createSeasonsTable($series) {
-        
-        global $config;
-
-        $base_folder = $config['series_folder'];
-        $series_folder = $base_folder."".$series;
+        $base_folder = $GLOBALS['series_folder'];
+        $series_folder = $base_folder."/".$series;
         #cycle through the folders in the series and output a table with poster images for each season
         $col = 1;
         $seasons_count = 0;
         $seasons_table = "<table>";
-
-        /*the objective is for a thumbnail for each episode in the season to be created from a main image in the
-        season folder. If there is no main image, alert the user to this. Check for the main image through $no_image*/
-        $no_image = false;
-
+        $seasons_table .= '<input type="hidden" id="series-selected" value="'.$series.'">';
         #compile array of all seasons in the series folder
         $seasons_folders = glob($series_folder."/*", GLOB_ONLYDIR);
         #each season contains a metadata folder, remove this from the array
@@ -96,11 +90,10 @@
                 /*If the season does not contain a main
                 image for the thumbnails alert the user by changing the button appearance*/
                 if(checkForMainEpisodeImage($series,"Season ".$seasons_count)) {
-                    $seasons_table .= "<input class=\"btn btn-primary\"  type=\"submit\" value=\"Season ".$seasons_count."\" name=\"season_number\" />";
+                    $seasons_table .= "<input class=\"btn btn-primary\"  type=\"button\" value=\"Season ".$seasons_count."\" />";
                 }
                 else {
                     $seasons_table .= "<button class=\"btn btn-danger image-needed\" type=\"button\" value=\"Season ".$seasons_count."\">No Image</button>"; 
-                    $no_image = true;   
                 }
                 $seasons_table .= "</td>";
                 $col++;            
@@ -112,5 +105,5 @@
         }   
         $seasons_table .= "</table>"; 
         echo $seasons_table;
-    }    
+    }      
 ?>

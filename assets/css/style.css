@@ -30,4 +30,17 @@ td {
   transition: .25s ease-in-out;
   background-size: 100% 100%;
 }
+
+.drop-area-container {
+  text-align: center;
+  margin: 0 auto;
+  height: 150px;
+}
+
+#drop-area {
+  margin-top: 10px;
+  height: 100px;
+  background-color: white;
+  border: 1px solid grey;
+}
 /*# sourceMappingURL=style.css.map */
