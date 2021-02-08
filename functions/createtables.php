@@ -2,13 +2,21 @@
     #include "functions/checkformainimage.php"; 
     /*function to display all the series folders on the network drive to enable the user to 
     pick the appropriate series for which to create thumbnails*/
-    function displayAllSeries($error) {
+    function displayAllSeries($message) {
         global $config;
 
         #cycle through the folders on the drive and output a table with poster images for each series
         $col = 1;
         $series_count = 0;
-        $series_table = "<table>";
+        $series_table ="";
+
+        if(!empty($message)) {
+            echo "<script>
+                    $('.alert-message').text('".$message."');
+                    $('.alert').addClass('show');
+                </script>";            
+        }
+        $series_table .= "<table>";
         $series_folder = $config['series_folder'];
         foreach (glob($series_folder."/*", GLOB_ONLYDIR) as $filename)
         {
