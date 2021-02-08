@@ -1,10 +1,15 @@
 $(document).ready(function() {
     //Main Series table
+    $("body").on("click",".close", function() {
+        $(".alert").removeClass("show");
+    });
+
     /*user selects a series from main episode list - create data (the name of the series) in order to 
     display the seasons within the series.*/
-    $('.choose-series').on("click", function() {
+    //dynamically created button - bound to body tag to enable function to be run on click
+    $("body").on("click",".choose-series", function() {
         //hide any alert that might already be displayed
-        $(".alert").alert("close");
+        $(".alert").removeClass("show");
         var series = $(this).val();
         var tableData = $.parseJSON(`{ "choose_series" : "${series}"}`);
         submitTableData(tableData);
@@ -13,9 +18,10 @@ $(document).ready(function() {
     //Seasons table
     /*user selects a season from main series list - create data (the name of the series and season) in order to 
     display the episodes within the series.*/
+    //dynamically created button - bound to body tag to enable function to be run on click
     $("body").on("click",".choose-season", function() {
         //hide any alert that might already be displayed
-        $(".alert").alert("close");
+        $(".alert").removeClass("show");
         var series = $("#series-selected").val();
         var season = $(this).val();
         var tableData = $.parseJSON(`{ 
@@ -25,7 +31,7 @@ $(document).ready(function() {
         submitTableData(tableData);
     });
 
-    //dynamically created buttons - bound to body tag to enable function to be run on click
+    //dynamically created button - bound to body tag to enable function to be run on click
     $("body").on("click",".image-needed", function() {
         if($(this).attr("data-selected")!="selected") {
             //deselect all buttons and revert their values
@@ -85,6 +91,39 @@ $(document).ready(function() {
         createFormData(image,series,season);
     });
 
+    //Episodes table
+    //Select all/select none global tick box selection toggle
+    //dynamically created buttons - bound to body tag to enable function to be run on click
+    $("body").on("click","#image-selection", function() {
+        if($(this).val()=='select-none'){
+            $('input:checkbox').prop('checked',false);
+            $(this).text("Select All");
+            $(this).val('select-all');
+        }
+        else {
+            $('input:checkbox').prop('checked', true);
+            $(this).val('select-none');        
+            $(this).text("Select None");
+        }
+    });
+
+    //create an array of checked images which will be converted to thumbnails then send to backend to process
+    //into thumbnails
+    $("body").on("click","#create-thumbnails", function() {
+        var thumbnails = [];
+        $(".episode-checkbox:checkbox:checked").each(function() {
+            thumbnails.push($(this).val());       
+        });
+        var series = $("#series-selected").val();
+        var season = $("#season-selected").val();
+        var tableData = $.parseJSON(`{ 
+            "choose_series" : "${series}", 
+            "choose_season" : "${season}" ,
+            "thumbnail_array" : "${thumbnails}"
+        }`);
+        submitTableData(tableData);
+    });
+
 })
 
 //function to submit data to backend in order to display new tables series/seaons/episodes
@@ -95,6 +134,7 @@ function submitTableData(tableData)
         data: tableData,
         datatype: "json",
         success: function(data){
+            console.log("success")
             $(".table-contents").html(data);
         },
         error(xhr,status,error) {

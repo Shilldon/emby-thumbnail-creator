@@ -22,6 +22,10 @@ td {
   margin: 5px;
 }
 
+.thumbnail-button-options .btn {
+  width: 160px;
+}
+
 .button-image {
   color: transparent;
   width: 150px;
