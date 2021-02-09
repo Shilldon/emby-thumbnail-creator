@@ -5,6 +5,7 @@
     include "functions/createtables.php";
     include "functions/checkisseriesvalid.php";
     include "functions/createthumbnails.php";
+    include "functions/addtexttoimage.php";
 
         // Map the drive
     $letter = $GLOBALS["letter"];
@@ -14,12 +15,19 @@
 <?php
 ##Main tables built here
     #user has selected a list of images to convert to thumbnails for the elected seaon
-    if(isset($_POST['thumbnail_array'])) {
+    if(isset($_POST['process_images'])) {
+        $action = $_POST['process_images'];
         $series = $_POST["choose_series"];
         $season = $_POST["choose_season"];
-        $thumbnails = $_POST["thumbnail_array"];
+        $image_array = $_POST["image_array"];
         $_POST = array();
-        createThumbnails($season, $series, $thumbnails);
+        if($action == "create_thumbnails") {
+            createThumbnails($season, $series, $image_array);
+        }
+        else {
+            addTextToImage($season, $series, $image_array);    
+            #showCompletedEpisodes($series, $season, $image_array);   
+        }
         exit();
     }
     #user has clicked on a season poster - display the episodes within that season

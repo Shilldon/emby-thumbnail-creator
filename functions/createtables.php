@@ -152,7 +152,7 @@
                         $img = $base_drive."/".$series."/metadata/Episode Images/".$image_name.".jpg";    
                     }
                     if(file_exists($img) != true) {
-                        $img = "./images/no_image.jpg";    
+                        $img = "../assets/images/no_image.jpg";    
                     }
                     $episode_table .= '<img class="episode-image" src="functions/getImage.php?i=' . urlencode($img) . '" data-episode="episode'.$episode_count.'">';
                     $episode_table .= "<input class=\"episode-checkbox\" type=\"checkbox\" checked id=\"episode".$episode_count."\" value=\"".$episode_name."\">";
@@ -170,8 +170,8 @@
         $episode_table .= '<div class="row">';
         $episode_table .= '<div class="col-12 d-flex justify-content-center thumbnail-button-options">';
         $episode_table .= "<div style=\"text-align:center\"><button class=\"btn btn-danger\" type=\"button\" value=\"select-none\" id=\"image-selection\">Select None</button></div>";     
-        $episode_table .= "<div style=\"text-align:center\"><button class=\"btn btn-primary\" type=\"button\" value=\"true\" id=\"images_to_convert\">Convert Images</button></div>";     
-        $episode_table .= "<div style=\"text-align:center\"><button class=\"btn btn-success\" type=\"button\" id=\"create-thumbnails\">Create Thumbnails</button></div>";     
+        $episode_table .= "<div style=\"text-align:center\"><button class=\"btn btn-primary process-images\" type=\"button\" id=\"convert-images\">Convert Images</button></div>";     
+        $episode_table .= "<div style=\"text-align:center\"><button class=\"btn btn-success process-images\" type=\"button\" id=\"create-thumbnails\">Create Thumbnails</button></div>";     
 
         echo $episode_table;
     }

@@ -1,5 +1,6 @@
 $(document).ready(function() {
     //Main Series table
+    //close alert button
     $("body").on("click",".close", function() {
         $(".alert").removeClass("show");
     });
@@ -109,17 +110,26 @@ $(document).ready(function() {
 
     //create an array of checked images which will be converted to thumbnails then send to backend to process
     //into thumbnails
-    $("body").on("click","#create-thumbnails", function() {
-        var thumbnails = [];
+    $("body").on("click",".process-images", function() {
+        var imagesArray = [];
+        var action = "";
+        if($(this).attr("id")=="create-thumbnails") {
+            action = "create_thumbnails";
+        }
+        else {
+            action = "add_text";
+        }
+
         $(".episode-checkbox:checkbox:checked").each(function() {
-            thumbnails.push($(this).val());       
+            imagesArray.push($(this).val());       
         });
         var series = $("#series-selected").val();
         var season = $("#season-selected").val();
         var tableData = $.parseJSON(`{ 
             "choose_series" : "${series}", 
             "choose_season" : "${season}" ,
-            "thumbnail_array" : "${thumbnails}"
+            "process_images" : "${action}",
+            "image_array" : "${imagesArray}"
         }`);
         submitTableData(tableData);
     });
