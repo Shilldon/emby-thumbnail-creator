@@ -26,7 +26,7 @@
         }
         else {
             addTextToImage($season, $series, $image_array);    
-            #showCompletedEpisodes($series, $season, $image_array);   
+            createTableOfImages($series, $season, $image_array);   
         }
         exit();
     }

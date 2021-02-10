@@ -16,12 +16,12 @@
             to the new format before running copy image*/
             if(!is_file($base_image)) {
                 $unnumbered_thumbnail = preg_replace("/^\d{1,2}+\s+\W+\s+/", "", $thumbnail);
-                rename($metadata_folder."".$unnumbered_thumbnail.".jpg", $metadataFolder."".$thumbnail.".jpg");
+                rename($metadata_folder."".$unnumbered_thumbnail.".jpg", $metadata_folder."".$thumbnail.".jpg");
             }
             #image copying process achieved through shell cmd line nconvert app
             #credit - https://www.xnview.com/en/nconvert/
             #runCopyImage($base_image,$season_folder,$thumbnail."-thumb");
-            shell_exec("nconvert -overwrite -o \"".$base_folder."/".$thumbnail."-thumb.jpg\" \"".$base_image."\"");
+            shell_exec("nconvert -overwrite -o \"".$season_folder."/".$thumbnail."-thumb.jpg\" \"".$base_image."\"");
         }  
         #return to main page and confirm task complete
         displayAllSeries("Thumbnails Created");

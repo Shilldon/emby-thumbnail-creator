@@ -119,10 +119,26 @@ $(document).ready(function() {
         else {
             action = "add_text";
         }
-
-        $(".episode-checkbox:checkbox:checked").each(function() {
-            imagesArray.push($(this).val());       
+        var noImageAlert = false;
+        $(".episode-checkbox:checkbox:checked").each(function() {     
+            if(action == "create_thumbnails") {       
+                if(!$(this).hasClass("no-image")) {
+                    console.log("adding "+$(this).val());
+                    imagesArray.push($(this).val());   
+                }
+                else {
+                    console.log("not adding "+$(this).val());
+                    noImageAlert = true;
+                }
+            }
+            else {
+                imagesArray.push($(this).val());       
+            }
         });
+        if(noImageAlert == true) {
+            $(".alert-message").html("Warning: some episodes did not have images.<br>Thumbnails not created for those episodes.<br>Use 'create image' first.");
+            $(".alert").addClass("show");   
+        }         
         var series = $("#series-selected").val();
         var season = $("#season-selected").val();
         var tableData = $.parseJSON(`{ 
@@ -131,7 +147,16 @@ $(document).ready(function() {
             "process_images" : "${action}",
             "image_array" : "${imagesArray}"
         }`);
-        submitTableData(tableData);
+        if(imagesArray.length>0) {
+            submitTableData(tableData);
+        }
+        else {
+            $(".alert-message").html("No valid images selected.");
+            $(".alert").addClass("show");    
+            setTimeout(function() {
+                $(".alert").removeClass("show");
+            }, 3000);           
+        }        
     });
 
 })
@@ -183,8 +208,8 @@ function uploadFormData(formData)
             //change button value, text and attributesso it can now be used to process thumbnails
             selectedButton.val(season);
             selectedButton.text(season);
-            selectedButton.attr("type","submit");
             selectedButton.addClass("btn-primary");
+            selectedButton.addClass("choose-season");
             selectedButton.removeClass("btn-success");
             selectedButton.removeClass("image-needed");
             //hide the file drop area

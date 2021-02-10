@@ -12,6 +12,7 @@
         
         #get the list of episodes selected by the user
         $episodes = explode(",",$listOfImagesToConvert);
+        
         foreach ($episodes as $episode) {
             #locate and read the nfo file which contains the true name of the series
             #(which is not, necessarily, the name of the nfo file or episode directory)

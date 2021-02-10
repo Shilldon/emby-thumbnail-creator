@@ -18,6 +18,7 @@
             #clear message after being displayed to prevent it being displayed on next table selected
             $message = "";        
         }
+        $series_table = '<div class="row justify-content-center">';
         $series_table .= "<table>";
         $series_folder = $GLOBALS['series_folder'];
         foreach (glob($series_folder."/*", GLOB_ONLYDIR) as $filename)
@@ -45,7 +46,7 @@
                 $col=1;
             }
         }   
-        $series_table .= "</table>";
+        $series_table .= "</table></div>";
 
         echo $series_table;
     }
@@ -58,7 +59,8 @@
         #cycle through the folders in the series and output a table with poster images for each season
         $col = 1;
         $seasons_count = 0;
-        $seasons_table = "<table>";
+        $seasons_table = '<div class="row justify-content-center">';
+        $seasons_table .= "<table>";
         $seasons_table .= '<input type="hidden" id="series-selected" value="'.$series.'">';
         #compile array of all seasons in the series folder
         $seasons_folders = glob($series_folder."/*", GLOB_ONLYDIR);
@@ -103,22 +105,22 @@
                 $col=1;
             }
         }   
-        $seasons_table .= "</table>"; 
+        $seasons_table .= "</table></div>"; 
         echo $seasons_table;
     }      
 
     /*function to display all the episodes within a specific season selected to enable the user
     to pick the appropriate episodes to create thumbnails for*/
-    function createEpisodesTable($series, $seasonNumber) {
+    function createEpisodesTable($series, $season) {
         $base_drive = $GLOBALS['series_folder'];
-        $season_folder = $base_drive."/".$series."/".$series." ".$seasonNumber;
+        $season_folder = $base_drive."/".$series."/".$series." ".$season;
         #cycle through season folder and list all sub-folders
         $col = 1;
         $episode_count = 0;
         $episode_table = '<div class="row justify-content-center">';
         $episode_table .= "<table>";
         $episode_table .= "<input type=\"hidden\" id=\"series-selected\" value=\"".$series."\">";
-        $episode_table .= "<input type=\"hidden\" id=\"season-selected\" value=\"".$seasonNumber."\">";
+        $episode_table .= "<input type=\"hidden\" id=\"season-selected\" value=\"".$season."\">";
 
         $episodes = glob($season_folder."/*", GLOB_ONLYDIR);
         #season folders contain a folder called metadata - remove this from array
@@ -147,15 +149,17 @@
                 if($col<=5) {
                     $episode_table .= "<td>"; 
                     $img = $base_drive."/".$series."/metadata/Episode Images/".$episode_name.".jpg";
+                    $no_image = "";
                     if(file_exists($img) != true) {
                         $image_name = preg_replace("/^\d{1,2}+\s+\W+\s+/", "", $episode_name);
                         $img = $base_drive."/".$series."/metadata/Episode Images/".$image_name.".jpg";    
                     }
                     if(file_exists($img) != true) {
-                        $img = "../assets/images/no_image.jpg";    
+                        $img = "../assets/images/no_image.jpg";   
+                        $no_image = "no-image"; 
                     }
                     $episode_table .= '<img class="episode-image" src="functions/getImage.php?i=' . urlencode($img) . '" data-episode="episode'.$episode_count.'">';
-                    $episode_table .= "<input class=\"episode-checkbox\" type=\"checkbox\" checked id=\"episode".$episode_count."\" value=\"".$episode_name."\">";
+                    $episode_table .= "<input class=\"episode-checkbox ".$no_image."\" type=\"checkbox\" checked id=\"episode".$episode_count."\" value=\"".$episode_name."\">";
                     $episode_table .= "</td>";
                     $col++;            
                 }   
@@ -165,15 +169,48 @@
                 }
             }  
         }
-        $episode_table .= '</table>';
+        $episode_table .= '</table></div>';
         //display options to select/deselect all images, create new images from the template Main Episode Image or generate thumbnails
         $episode_table .= '<div class="row">';
         $episode_table .= '<div class="col-12 d-flex justify-content-center thumbnail-button-options">';
         $episode_table .= "<div style=\"text-align:center\"><button class=\"btn btn-danger\" type=\"button\" value=\"select-none\" id=\"image-selection\">Select None</button></div>";     
-        $episode_table .= "<div style=\"text-align:center\"><button class=\"btn btn-primary process-images\" type=\"button\" id=\"convert-images\">Convert Images</button></div>";     
+        $episode_table .= "<div style=\"text-align:center\"><button class=\"btn btn-primary process-images\" type=\"button\" id=\"convert-images\">Create Images</button></div>";     
         $episode_table .= "<div style=\"text-align:center\"><button class=\"btn btn-success process-images\" type=\"button\" id=\"create-thumbnails\">Create Thumbnails</button></div>";     
 
         echo $episode_table;
     }
+
+    function createTableOfImages($series, $season, $episodes) {
+        $base_drive = $GLOBALS['series_folder'];
+        $season_folder = $base_drive."/".$series."/".$series." ".$season;
+        $episodes = explode(",",$episodes);
+        $col = 1;
+        $episode_count = 0;
+        $image_table = '<div class="col-12 d-flex justify-content-center">';
+        $image_table .= "<table>";
+        foreach ($episodes as $episode_name)
+        {
+            $episode_count++;
+            if($col==1) {
+                $image_table .= "<tr>";
+            }
+            if($col<=5) {
+                $image_table .= "<td>"; 
+                $img = $base_drive."/".$series."/metadata/Episode Images/".$episode_name.".jpg";
+                $image_table .= '<img class="episode-image" src="functions/getImage.php?i=' . urlencode($img) . '">';
+                $image_table .= "</td>";
+                $col++;            
+            }   
+            if($col==6) {
+                $image_table .= "</tr>";
+                $col=1;
+            }
+        }  
+        $image_table .= "</table></div>";     
+        $image_table .= "<div style=\"text-align:center\"><button class=\"btn btn-success\" style=\"margin: 5px\" type=\"button\">Create Thumbnails</button></div>";     
+        echo $image_table;        
+    }
+
+
 
 ?>
