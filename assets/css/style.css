@@ -35,6 +35,28 @@ td {
   background-size: 100% 100%;
 }
 
+.modal-dialog {
+  width: auto !important;
+  max-width: 80vw;
+}
+
+.modal-content {
+  background-color: #808080;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-footer {
+  border-top: none;
+}
+
+.large-episodeimage {
+  max-width: 70vw;
+  max-height: 100vh;
+}
+
 .drop-area-container {
   text-align: center;
   margin: 0 auto;
@@ -46,5 +68,22 @@ td {
   height: 100px;
   background-color: white;
   border: 1px solid grey;
+}
+
+.flashing-text {
+  -webkit-animation: flash 0.75s linear infinite;
+          animation: flash 0.75s linear infinite;
+}
+
+@-webkit-keyframes flash {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes flash {
+  50% {
+    opacity: 0;
+  }
 }
 /*# sourceMappingURL=style.css.map */

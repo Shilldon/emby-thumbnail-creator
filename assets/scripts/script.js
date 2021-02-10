@@ -1,4 +1,9 @@
 $(document).ready(function() {
+    //Check if network drive is mapped
+    $(window).on('load', function() {
+        checkConnection();
+    });
+
     //Main Series table
     //close alert button
     $("body").on("click",".close", function() {
@@ -108,8 +113,8 @@ $(document).ready(function() {
         }
     });
 
-    //create an array of checked images which will be converted to thumbnails then send to backend to process
-    //into thumbnails
+    //create an array of checked episodes to either create episode images from the template or
+    //to convert existing episode images into thumbnails
     $("body").on("click",".process-images", function() {
         var imagesArray = [];
         var action = "";
@@ -120,14 +125,15 @@ $(document).ready(function() {
             action = "add_text";
         }
         var noImageAlert = false;
+        /*if the episode does not have an existing image prevent it from being added
+        to the array to create thumbnails to prevent the back end attempted to process
+        an image that does not exist*/
         $(".episode-checkbox:checkbox:checked").each(function() {     
             if(action == "create_thumbnails") {       
                 if(!$(this).hasClass("no-image")) {
-                    console.log("adding "+$(this).val());
                     imagesArray.push($(this).val());   
                 }
                 else {
-                    console.log("not adding "+$(this).val());
                     noImageAlert = true;
                 }
             }
@@ -135,6 +141,7 @@ $(document).ready(function() {
                 imagesArray.push($(this).val());       
             }
         });
+        /*alert the user if they selected some episodes without images*/
         if(noImageAlert == true) {
             $(".alert-message").html("Warning: some episodes did not have images.<br>Thumbnails not created for those episodes.<br>Use 'create image' first.");
             $(".alert").addClass("show");   
@@ -147,6 +154,7 @@ $(document).ready(function() {
             "process_images" : "${action}",
             "image_array" : "${imagesArray}"
         }`);
+        /*if the user has not selected any images at all prevent the data from passing to back end*/
         if(imagesArray.length>0) {
             submitTableData(tableData);
         }
@@ -159,7 +167,58 @@ $(document).ready(function() {
         }        
     });
 
+    //display large version of episode image on click
+    $("body").on("click",".episode-image", function() {
+        var imageSrc = $(this).attr("src");
+        var episodeNumber = $(this).attr("data-episode");
+        $(".modal").attr("data-episode",`${episodeNumber}`);
+        $(".large-episodeimage").attr("src",`${imageSrc}`);
+        $(".modal").modal("show");
+    });
+
+    //on selecting the image in the modal - tick the corresponding checkbox
+    $("#select-episode").on("click", function() {
+        var episodeNumber = $(".modal").attr("data-episode");
+        $(`#${episodeNumber}`).prop('checked', true);
+        $(".modal").modal("hide");
+    });
+
 })
+
+function checkConnection() {
+    setTimeout(function() {
+        $.ajax({
+            type: "POST",
+            url: "functions/checkConnection.php",
+            data: { "check_connection" : "true" },
+            datatype: JSON,
+            success: function(response) {
+                var connection = JSON.parse(response);
+                if(connection.connection_status == "connected") {
+                    $(".button-connect").text("Disconnect");
+                    $(".disconnected-icon").addClass("d-none");
+                    $(".connected-icon").removeClass("flashing-text");
+                    $(".connected-icon").removeClass("d-none");
+                    $(".connected-icon").css("color","yellowgreen");
+                }
+                else if(connection.connection_status == "disconnected"){
+                    $(".button-connect").text("Connect");
+                    $(".connected-icon").addClass("d-none");
+                    $(".disconnected-icon").removeClass("d-none");
+                    $(".disconnected-icon").css("color","grey");                
+                }
+                else {
+                    $(".button-connect").text("Connect");
+                    $(".connected-icon").addClass("d-none");
+                    $(".disconnected-icon").removeClass("d-none");
+                    $(".connection-icon").addClass("flashing-text");         
+                }
+            },
+            complete: checkConnection,
+            timeout: 2000
+        })
+    }, 5000);
+}
 
 //function to submit data to backend in order to display new tables series/seaons/episodes
 function submitTableData(tableData) 
@@ -169,7 +228,6 @@ function submitTableData(tableData)
         data: tableData,
         datatype: "json",
         success: function(data){
-            console.log("success")
             $(".table-contents").html(data);
         },
         error(xhr,status,error) {
