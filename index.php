@@ -7,7 +7,7 @@
     include "functions/createthumbnails.php";
     include "functions/addtexttoimage.php";
 
-        // Map the drive
+    // Map the drive
     $letter = $GLOBALS["letter"];
     $location = $GLOBALS["location"];
     system("net use ".$letter.": \\".$location." /persistent:no>nul 2>&1");

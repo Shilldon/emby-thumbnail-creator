@@ -4,6 +4,16 @@ $(document).ready(function() {
         checkConnection();
     });
 
+    //Navbar
+    $(".button-connection").on("click", function() {
+        var connectionRequest = $(this).val();
+        var connectionRequestData = $.parseJSON(`{ 
+            "connection_request" : "${connectionRequest}"
+        }`);
+        console.log(connectionRequestData)
+        updateConnection(connectionRequestData);        
+    })
+
     //Main Series table
     //close alert button
     $("body").on("click",".close", function() {
@@ -185,6 +195,35 @@ $(document).ready(function() {
 
 })
 
+function updateConnection(connectionRequestData) {
+    $.ajax({
+        type: "POST",
+        url: "functions/updateconnection.php",
+        data: connectionRequestData,
+        datatype: "json",
+        success: function(response){
+            console.log(response);
+            var connection = JSON.parse(response);
+            if(connection.connection_status == "disconnected") {
+                $(".button-connection").text("Connect");
+                $(".button-connection").val("connect");
+                $(".connected-icon").css("color","grey");                      
+            }
+            else if(connection.connection_status == "connected") {
+                $(".button-connection").text("Disconnect");
+                $(".button-connection").val("disconnect");
+                $(".connected-icon").css("color","yellowgreen");
+            }
+        },
+        error(xhr,status,error) {
+            console.log('status : ' + status + " error "+error);    
+        }
+    });    
+}
+
+/*function to poll the page to determine if the mapped network drive is connected.
+If it is display green linked icon in navbar else display grey unlinked icon and change
+the nav menu option to "connect"*/
 function checkConnection() {
     setTimeout(function() {
         $.ajax({
@@ -195,23 +234,15 @@ function checkConnection() {
             success: function(response) {
                 var connection = JSON.parse(response);
                 if(connection.connection_status == "connected") {
-                    $(".button-connect").text("Disconnect");
-                    $(".disconnected-icon").addClass("d-none");
+                    $(".button-connection").text("Disconnect");
+                    $(".button-connection").val("disconnect");
                     $(".connected-icon").removeClass("flashing-text");
-                    $(".connected-icon").removeClass("d-none");
                     $(".connected-icon").css("color","yellowgreen");
                 }
                 else if(connection.connection_status == "disconnected"){
-                    $(".button-connect").text("Connect");
-                    $(".connected-icon").addClass("d-none");
-                    $(".disconnected-icon").removeClass("d-none");
-                    $(".disconnected-icon").css("color","grey");                
-                }
-                else {
-                    $(".button-connect").text("Connect");
-                    $(".connected-icon").addClass("d-none");
-                    $(".disconnected-icon").removeClass("d-none");
-                    $(".connection-icon").addClass("flashing-text");         
+                    $(".button-connection").text("Connect");
+                    $(".button-connection").val("connect");
+                    $(".connected-icon").css("color","grey");                   
                 }
             },
             complete: checkConnection,

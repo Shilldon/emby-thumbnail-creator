@@ -5,20 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Emby Thumbnails</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
     <link rel="stylesheet" href="assets/css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://use.fontawesome.com/releases/v5.15.2/js/all.js" data-auto-replace-svg="nest"></script>
     <script src="assets/scripts/script.js"></script>
 </head>
 <body>
     <header>
         <div class="container">
-            <nav class="navbar navbar-dark bg-dark">
-                <a class="navbar-brand" href="index.php">
-                    <img src="assets/images/logo.png" width="200" height="60" class="d-inline-block align-top" alt="">
-                    Thumbnail Creator
-                </a>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-between">
+
+                    <a class="navbar-brand" href="index.php">
+                        <img src="assets/images/logo.png" width="200" height="60" class="d-inline-block align-top" alt="">
+                        Thumbnail Creator
+                    </a>
+                    <div id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                              <span class="nav-link">Remove Series</span>
+                            </li>
+                            <li class="nav-item">
+                              <a><span class="nav-link button-connection">Connecting</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <span class="fa-stack"><i class="fas fa-link connected-icon flashing-text" style="color: red" data-fa-transform="down-4 grow-4 right-16"></i></span>
+                            </li>
+                          </ul>
+                    </div>
+ 
+
+
                 <form class="form-inline" action="index.php" method="POST">
                     <input class="form-control mr-sm-2" type="search" name="search_series" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
