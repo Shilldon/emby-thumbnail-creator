@@ -87,14 +87,16 @@
                 if(is_file($img) != TRUE) {
                     $img = $season."/poster.jpg";    
                 }          
-                $seasons_table .= '<img src="functions/getImage.php?i=' . urlencode($img) . '">';
+                #$seasons_table .= '<img src="functions/getImage.php?i=' . urlencode($img) . '">';
 
                 /*If the season does not contain a main
                 image for the thumbnails alert the user by changing the button appearance*/
                 if(checkForMainEpisodeImage($series,"Season ".$seasons_count)) {
+                    $seasons_table .= "<input type=\"button\" class=\"button-image choose-season\" style=\"background-image:url(functions/getimage.php?i=".urlencode($img).")\" value=\"Season ".$seasons_count."\">";
                     $seasons_table .= "<input class=\"btn btn-primary choose-season\"  type=\"button\" value=\"Season ".$seasons_count."\" />";
                 }
                 else {
+                    $seasons_table .= "<input type=\"button\" class=\"button-image image-needed\" style=\"opacity: 0.4; background-image:url(functions/getimage.php?i=".urlencode($img).")\" value=\"Season ".$seasons_count."\">";
                     $seasons_table .= "<button class=\"btn btn-danger image-needed\" type=\"button\" value=\"Season ".$seasons_count."\">No Image</button>"; 
                 }
                 $seasons_table .= "</td>";

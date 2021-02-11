@@ -120,6 +120,16 @@ $(document).ready(function() {
         createFormData(image,series,season);
     });
 
+    //close button for drop-area
+    $(".close-filedrop").on("click", function() {
+        //hide the drop area
+        $(".drop-area-container").addClass("d-none"); 
+        //reset the buttons
+        $(".image-needed").removeAttr("data-selected");
+        $(".image-needed").addClass("btn-danger");
+        $(".image-needed").removeClass("btn-success");
+        $(".image-needed").text("No Image");                
+    })
     //Episodes table
     //Select all/select none global tick box selection toggle
     //dynamically created buttons - bound to body tag to enable function to be run on click
