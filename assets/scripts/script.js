@@ -5,14 +5,26 @@ $(document).ready(function() {
     });
 
     //Navbar
+    /*button function to request connect or deconnect from network drive*/
     $(".button-connection").on("click", function() {
         var connectionRequest = $(this).val();
         var connectionRequestData = $.parseJSON(`{ 
             "connection_request" : "${connectionRequest}"
         }`);
-        console.log(connectionRequestData)
         updateConnection(connectionRequestData);        
-    })
+    });
+
+    /*button function to call remove series*/
+    $(".button-removeseason").on("click", function() {
+        console.log("clicked")
+        var series = $("#series-selected").val();
+        var season = $("#season-selected").val();
+        var removeSeasonData = $.parseJSON(`{ 
+            "choose_series" : "${series}", 
+            "choose_season" : "${season}" 
+        }`);
+        removeSeason(removeSeasonData);
+    });
 
     //Main Series table
     //close alert button
@@ -36,6 +48,7 @@ $(document).ready(function() {
     display the episodes within the series.*/
     //dynamically created button - bound to body tag to enable function to be run on click
     $("body").on("click",".choose-season", function() {
+        $(".button-removeseason").removeAttr("disabled");
         //hide any alert that might already be displayed
         $(".alert").removeClass("show");
         var series = $("#series-selected").val();
@@ -195,25 +208,56 @@ $(document).ready(function() {
 
 })
 
+/*function to send request to backend to connect or disconnect network drive
+and to change status icon in navbar to indicate whether the network drive is connected*/
 function updateConnection(connectionRequestData) {
+    $(".button-connection").text("Connecting");
+    removeClassStartingWith($(".button-connection"), 'btn-outline-');
+    $(".button-connection").addClass("btn-outline-warning");
+    $(".connected-icon").css("color","yellow");
+    $(".connected-icon").addClass("flashing-text");     
     $.ajax({
         type: "POST",
         url: "functions/updateconnection.php",
         data: connectionRequestData,
         datatype: "json",
         success: function(response){
-            console.log(response);
             var connection = JSON.parse(response);
             if(connection.connection_status == "disconnected") {
                 $(".button-connection").text("Connect");
+                removeClassStartingWith($(".button-connection"), 'btn-outline-');
+                $(".button-connection").addClass("btn-outline-success");
                 $(".button-connection").val("connect");
+                $(".connected-icon").removeClass("flashing-text");
                 $(".connected-icon").css("color","grey");                      
             }
             else if(connection.connection_status == "connected") {
                 $(".button-connection").text("Disconnect");
                 $(".button-connection").val("disconnect");
+                removeClassStartingWith($(".button-connection"), 'btn-outline-');
+                $(".button-connection").addClass("btn-outline-danger");
+                $(".connected-icon").removeClass("flashing-text");             
                 $(".connected-icon").css("color","yellowgreen");
             }
+        },
+        error(xhr,status,error) {
+            console.log('status : ' + status + " error "+error);    
+        }
+    });    
+}
+
+//function to call backend to cycle through nfo files in the current season folder and
+//remove the <season> tag. This prevents emby displaying the episode number in front of the 
+//episode name in the gui.
+function removeSeason(removeSeasonData) {
+    $.ajax({
+        type: "POST",
+        url: "functions/removeSeason.php",
+        data: removeSeasonData,
+        datatype: "json",
+        success: function(response){
+            $(".alert").addClass("show");
+            $(".alert-message").text("Series season data removed.");
         },
         error(xhr,status,error) {
             console.log('status : ' + status + " error "+error);    
@@ -234,12 +278,15 @@ function checkConnection() {
             success: function(response) {
                 var connection = JSON.parse(response);
                 if(connection.connection_status == "connected") {
+                    removeClassStartingWith($(".button-connection"), 'btn-outline-');
+                    $(".button-connection").addClass("btn-outline-danger");
                     $(".button-connection").text("Disconnect");
                     $(".button-connection").val("disconnect");
                     $(".connected-icon").removeClass("flashing-text");
                     $(".connected-icon").css("color","yellowgreen");
                 }
                 else if(connection.connection_status == "disconnected"){
+                    $(".button-connection").addClass("btn-outline-success");
                     $(".button-connection").text("Connect");
                     $(".button-connection").val("connect");
                     $(".connected-icon").css("color","grey");                   
@@ -306,3 +353,10 @@ function uploadFormData(formData)
         }
     });
 }    
+
+/*function to remove a class starting with a specific string*/
+function removeClassStartingWith(node, begin) {
+    node.removeClass (function (index, className) {
+        return (className.match ( new RegExp("\\b"+begin+"\\S+", "g") ) || []).join(' ');
+    });
+}
