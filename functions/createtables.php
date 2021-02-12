@@ -108,6 +108,7 @@
             }
         }   
         $seasons_table .= "</table></div>"; 
+        $seasons_table .= "<div style=\"text-align:center\"><a href=\"index.php\"><button class=\"btn btn-primary\" style=\"margin: 5px\" type=\"button\">Back</button></a></div>";   
         echo $seasons_table;
     }      
 
@@ -140,6 +141,13 @@
             in the format [Episode Number] - [Episode Name].jpg but many omit the episode number from the file name.
             To locate the images both formats need to be checked.
             Where a thumbnail image does not exist, display a blank image.*/
+            $episode_table .= "<tr>";
+            $episode_table .= "<td>";
+            $img = $base_drive."/".$series."/".$series." ".$season."/Main Episode Image.jpg";
+            $img_size = getimagesize($img);
+            $episode_table .= '<img src="functions/getImage.php?i=' . urlencode($img) . '">Base Image<br>'.$img_size[0]." x ".$img_size[1];
+            $episode_table .= "</td>";
+            $episode_table .= "</tr>";
             natsort($episodes);
             foreach ($episodes as $episode_name)
             {
@@ -178,6 +186,7 @@
         $episode_table .= "<div style=\"text-align:center\"><button class=\"btn btn-danger\" type=\"button\" value=\"select-none\" id=\"image-selection\">Select None</button></div>";     
         $episode_table .= "<div style=\"text-align:center\"><button class=\"btn btn-primary process-images\" type=\"button\" id=\"convert-images\">Create Images</button></div>";     
         $episode_table .= "<div style=\"text-align:center\"><button class=\"btn btn-success process-images\" type=\"button\" id=\"create-thumbnails\">Create Thumbnails</button></div>";     
+        $episode_table .= "<div style=\"text-align:center\"><button class=\"btn btn-primary button-back\" style=\"margin: 5px\" type=\"button\">Back</button></div>";   
 
         echo $episode_table;
     }

@@ -26,6 +26,13 @@ $(document).ready(function() {
         removeSeason(removeSeasonData);
     });
 
+    /*button function to go back to previous table*/
+    $("body").on("click",".button-back", function() {
+        var series = $("#series-selected").val();
+        var tableData = $.parseJSON(`{ "choose_series" : "${series}"}`);
+        submitTableData(tableData);           
+    })
+
     //Main Series table
     //close alert button
     $("body").on("click",".close", function() {
@@ -215,7 +222,6 @@ $(document).ready(function() {
         $(`#${episodeNumber}`).prop('checked', true);
         $(".modal").modal("hide");
     });
-
 })
 
 /*function to send request to backend to connect or disconnect network drive

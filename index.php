@@ -45,6 +45,7 @@
         createSeasonsTable($series);
         exit();
     }
+
 ?>
 
 <?php echo file_get_contents("templates/header.html"); ?>
