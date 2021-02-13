@@ -18,6 +18,10 @@ td {
   height: 200px;
 }
 
+.navbar {
+  background-color: transparent;
+}
+
 .btn {
   margin: 5px;
 }
@@ -55,6 +59,20 @@ td {
 .large-episodeimage {
   max-width: 70vw;
   max-height: 100vh;
+}
+
+table {
+  margin-bottom: 10vh;
+}
+
+header {
+  height: 10vh;
+  background-image: -webkit-linear-gradient(left, #010a03, #0e3319, #050a06, #043312, black);
+}
+
+footer {
+  height: 5vh;
+  background-image: -webkit-linear-gradient(left, #010a03, #0e3319, #050a06, #043312, black);
 }
 
 .drop-area-container {

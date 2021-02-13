@@ -71,10 +71,10 @@ $(document).ready(function() {
     $("body").on("click",".image-needed", function() {
         if($(this).attr("data-selected")!="selected") {
             //deselect all buttons and revert their values
-            $(".image-needed").removeAttr("data-selected");
-            $(".image-needed").addClass("btn-danger");
-            $(".image-needed").removeClass("btn-success");
-            $(".image-needed").text("No Image");
+            $("button.image-needed").removeAttr("data-selected");
+            $("button.image-needed").addClass("btn-danger");
+            $("button.image-needed").removeClass("btn-success");
+            $("button.image-needed").text("No Image");
             //select this button, change its value
             $(this).attr("data-selected","selected");
             $(this).addClass("btn-success");
@@ -85,10 +85,10 @@ $(document).ready(function() {
         }
         else {
             //on second click deselect and reset all buttons
-            $(".image-needed").removeAttr("data-selected");
-            $(".image-needed").addClass("btn-danger");
-            $(".image-needed").removeClass("btn-success");
-            $(".image-needed").text("No Image");
+            $("button.image-needed").removeAttr("data-selected");
+            $("button.image-needed").addClass("btn-danger");
+            $("button.image-needed").removeClass("btn-success");
+            $("button.image-needed").text("No Image");
             //hide the image drop area
             $(".drop-area-container").addClass("d-none");  
         }
@@ -124,6 +124,7 @@ $(document).ready(function() {
         var image = e.originalEvent.dataTransfer.files;
         var series = $('#series-selected').val();
         var season = $('.image-needed[data-selected="selected"]').val();
+        $('.image-needed[data-selected="selected"]').siblings().css("opacity","1");
         createFormData(image,series,season);
     });
 
@@ -158,13 +159,18 @@ $(document).ready(function() {
     $("body").on("click",".process-images", function() {
         var imagesArray = [];
         var action = "";
+        var alertMessage = "";
         if($(this).attr("id")=="create-thumbnails") {
             action = "create_thumbnails";
+            alertMessage = "Thumbnails created."
         }
         else {
             action = "add_text";
+            alertMessage = "Episode images created."
         }
         var noImageAlert = false;
+         
+        console.log("action "+action);
         /*if the episode does not have an existing image prevent it from being added
         to the array to create thumbnails to prevent the back end attempted to process
         an image that does not exist*/
@@ -192,7 +198,8 @@ $(document).ready(function() {
             "choose_series" : "${series}", 
             "choose_season" : "${season}" ,
             "process_images" : "${action}",
-            "image_array" : "${imagesArray}"
+            "image_array" : "${imagesArray}",
+            "alert_message" : "${alertMessage}"
         }`);
         /*if the user has not selected any images at all prevent the data from passing to back end*/
         if(imagesArray.length>0) {
@@ -272,6 +279,7 @@ function removeSeason(removeSeasonData) {
         data: removeSeasonData,
         datatype: "json",
         success: function(response){
+            console.log(response);
             $(".alert").addClass("show");
             $(".alert-message").text("Series season data removed.");
         },
@@ -322,6 +330,12 @@ function submitTableData(tableData)
         data: tableData,
         datatype: "json",
         success: function(data){
+            var message = tableData.alert_message;
+            //on completing images/thumbnails display a message
+            if(tableData.hasOwnProperty("alert_message")) {
+                $(".alert-message").text(tableData.alert_message);
+                $(".alert").addClass("show");
+            }
             $(".table-contents").html(data);
         },
         error(xhr,status,error) {
@@ -345,6 +359,7 @@ function createFormData(image, series, season)
 //for thumbnails for user selected season
 function uploadFormData(formData) 
 {
+    console.log(formData)
     $.ajax({
         url: "functions/uploadimage.php",
         type: "POST",
@@ -357,7 +372,7 @@ function uploadFormData(formData)
             var season = dict.season;
             //locate button clicked to select image for upload
             var selectedButton = $('.image-needed[data-selected="selected"]');
-            //change button value, text and attributesso it can now be used to process thumbnails
+            //change button value, text and attributes so it can now be used to process thumbnails/images
             selectedButton.val(season);
             selectedButton.text(season);
             selectedButton.addClass("btn-primary");

@@ -15,15 +15,25 @@
     if (($key = array_search($season_folder."/metadata", $episodes)) !== false) {
         unset($episodes[$key]);
     }  
-    echo implode($episodes);
     foreach ($episodes as $episode) {
         #locate and read the nfo file for each episode
-        
+        /*
         $nfo_file = file_get_contents($episode.".nfo");
+        $count = 0;
         #replace the <season> tag with an empty tag to prevent emby naming each episode with the episode number
-        $output = preg_replace('/<season>[0-9]+?<\/season>/', '<season></season>', $nfo_file);
-        if(is_array($output)) {
+        $output = preg_replace('/<season>[0-9]+?<\/season>/', '', $nfo_file, -1, $count);
+        if($count>0) {
+            echo "removed ";
             file_put_contents($episode.".nfo",$output);
+        }*/
+        $lines = file($episode.".nfo");    
+        $remove_line = "<season>";
+
+        foreach($lines as $key => $line) {
+            if(preg_match("/($remove_line)/", $line)) {
+                unset($lines[$key]);
+            }
         }
+        file_put_contents($episode.".nfo", implode("", $lines));
     }
 ?>

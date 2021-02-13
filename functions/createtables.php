@@ -199,6 +199,8 @@
         $episode_count = 0;
         $image_table = '<div class="col-12 d-flex justify-content-center">';
         $image_table .= "<table>";
+        $image_table .= "<input type=\"hidden\" id=\"series-selected\" value=\"".$series."\">";
+        $image_table .= "<input type=\"hidden\" id=\"season-selected\" value=\"".$season."\">";
         foreach ($episodes as $episode_name)
         {
             $episode_count++;
@@ -209,6 +211,8 @@
                 $image_table .= "<td>"; 
                 $img = $base_drive."/".$series."/metadata/Episode Images/".$episode_name.".jpg";
                 $image_table .= '<img class="episode-image" src="functions/getImage.php?i=' . urlencode($img) . '">';
+                $image_table .= "<input class=\"episode-checkbox\" type=\"checkbox\" checked id=\"episode".$episode_count."\" value=\"".$episode_name."\">";
+
                 $image_table .= "</td>";
                 $col++;            
             }   
@@ -218,7 +222,13 @@
             }
         }  
         $image_table .= "</table></div>";     
-        $image_table .= "<div style=\"text-align:center\"><button class=\"btn btn-success\" style=\"margin: 5px\" type=\"button\">Create Thumbnails</button></div>";     
+        $image_table .= '<div class="row">';
+        $image_table .= '<div class="col-12 d-flex justify-content-center thumbnail-button-options">';
+        $image_table .= "<div style=\"text-align:center\"><button class=\"btn btn-danger\" type=\"button\" value=\"select-none\" id=\"image-selection\">Select None</button></div>";     
+        $image_table .= "<div style=\"text-align:center\"><button class=\"btn btn-success process-images\" style=\"margin: 5px\" type=\"button\" id=\"create-thumbnails\">Create Thumbnails</button></div>";     
+        $image_table .= "<div style=\"text-align:center\"><button class=\"btn btn-primary button-back\" style=\"margin: 5px\" type=\"button\">Back</button></div>";  
+        $image_table .= '</div>';
+
         echo $image_table;        
     }
 
