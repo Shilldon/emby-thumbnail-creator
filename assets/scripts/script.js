@@ -16,7 +16,6 @@ $(document).ready(function() {
 
     /*button function to call remove series*/
     $(".button-removeseason").on("click", function() {
-        console.log("clicked")
         var series = $("#series-selected").val();
         var season = $("#season-selected").val();
         var removeSeasonData = $.parseJSON(`{ 
@@ -170,7 +169,6 @@ $(document).ready(function() {
         }
         var noImageAlert = false;
          
-        console.log("action "+action);
         /*if the episode does not have an existing image prevent it from being added
         to the array to create thumbnails to prevent the back end attempted to process
         an image that does not exist*/
@@ -203,6 +201,7 @@ $(document).ready(function() {
         }`);
         /*if the user has not selected any images at all prevent the data from passing to back end*/
         if(imagesArray.length>0) {
+            $("#loader-modal").modal("show");
             submitTableData(tableData);
         }
         else {
@@ -218,16 +217,16 @@ $(document).ready(function() {
     $("body").on("click",".episode-image", function() {
         var imageSrc = $(this).attr("src");
         var episodeNumber = $(this).attr("data-episode");
-        $(".modal").attr("data-episode",`${episodeNumber}`);
+        $("#image-modal").attr("data-episode",`${episodeNumber}`);
         $(".large-episodeimage").attr("src",`${imageSrc}`);
-        $(".modal").modal("show");
+        $("#image-modal").modal("show");
     });
 
     //on selecting the image in the modal - tick the corresponding checkbox
     $("#select-episode").on("click", function() {
         var episodeNumber = $(".modal").attr("data-episode");
         $(`#${episodeNumber}`).prop('checked', true);
-        $(".modal").modal("hide");
+        $("#image-modal").modal("hide");
     });
 })
 
@@ -279,7 +278,6 @@ function removeSeason(removeSeasonData) {
         data: removeSeasonData,
         datatype: "json",
         success: function(response){
-            console.log(response);
             $(".alert").addClass("show");
             $(".alert-message").text("Series season data removed.");
         },
@@ -330,15 +328,20 @@ function submitTableData(tableData)
         data: tableData,
         datatype: "json",
         success: function(data){
-            var message = tableData.alert_message;
             //on completing images/thumbnails display a message
             if(tableData.hasOwnProperty("alert_message")) {
                 $(".alert-message").text(tableData.alert_message);
                 $(".alert").addClass("show");
             }
             $(".table-contents").html(data);
+            //hide the loading modal
+            $("#loader-modal").modal("hide");
         },
         error(xhr,status,error) {
+            //hide the loading modal
+            $("#loader-modal").modal("hide");
+            $(".alert").addClass("show");
+            $(".alert-text").text("Error: "+error);
             console.log('status : ' + status + " error "+error);    
         }
     });
@@ -359,7 +362,6 @@ function createFormData(image, series, season)
 //for thumbnails for user selected season
 function uploadFormData(formData) 
 {
-    console.log(formData)
     $.ajax({
         url: "functions/uploadimage.php",
         type: "POST",

@@ -168,8 +168,10 @@
                         $img = "../assets/images/no_image.jpg";   
                         $no_image = "no-image"; 
                     }
-                    $episode_table .= '<img class="episode-image" src="functions/getImage.php?i=' . urlencode($img) . '" data-episode="episode'.$episode_count.'">';
-                    $episode_table .= "<input class=\"episode-checkbox ".$no_image."\" type=\"checkbox\" checked id=\"episode".$episode_count."\" value=\"".$episode_name."\">";
+                    $episode_table .= '<div><img class="episode-image" src="functions/getImage.php?i=' . urlencode($img) . '" data-episode="episode'.$episode_count.'">';
+                    $episode_table .= "<input class=\"episode-checkbox ".$no_image."\" type=\"checkbox\" checked id=\"episode".$episode_count."\" value=\"".$episode_name."\"></div>";
+                    $episode_table .= '<p>'.$episode_name.'</p>';                    
+
                     $episode_table .= "</td>";
                     $col++;            
                 }   
@@ -211,6 +213,7 @@
                 $image_table .= "<td>"; 
                 $img = $base_drive."/".$series."/metadata/Episode Images/".$episode_name.".jpg";
                 $image_table .= '<img class="episode-image" src="functions/getImage.php?i=' . urlencode($img) . '">';
+                $image_table .= '<p>'.$episode_name.'</p>';                      
                 $image_table .= "<input class=\"episode-checkbox\" type=\"checkbox\" checked id=\"episode".$episode_count."\" value=\"".$episode_name."\">";
 
                 $image_table .= "</td>";
